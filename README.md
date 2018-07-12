@@ -24,6 +24,6 @@ submodule update --init --recursive`.
   'userHooks' => false,
   'gitBin' => '',
   'windowsMode' => false,
-  'debug' => true,
+  'debug' => true
 ]
 ```
