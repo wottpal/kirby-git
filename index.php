@@ -14,7 +14,7 @@ Kirby::plugin('wottpal/git', [
     'userHooks' => false,
     'gitBin' => '',
     'windowsMode' => false,
-    'debug' => true,
+    'debug' => true
   ],
 
   'hooks' => [

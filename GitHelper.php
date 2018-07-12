@@ -1,6 +1,6 @@
 <?php
 
-class GitterHelper {
+class GitHelper {
 
   public $path;
   public $branch;
@@ -21,15 +21,15 @@ class GitterHelper {
   */
   public function __construct() {
     $this->user = kirby()->user()->name();
-    $this->path = option('wottpal.gitter.path');
-    $this->branch = option('wottpal.gitter.branch');
-    $this->shouldPull = option('wottpal.gitter.shouldPull');
-    $this->shouldPush = option('wottpal.gitter.shouldPush');
-    $this->shouldCommit = option('wottpal.gitter.shouldCommit');
-    $this->userHooks = option('wottpal.gitter.userHooks');
-    $this->gitBin = option('wottpal.gitter.gitBin');
-    $this->windowsMode = option('wottpal.gitter.windowsMode');
-    $this->debug = option('wottpal.gitter.debug');
+    $this->path = option('wottpal.git.path');
+    $this->branch = option('wottpal.git.branch');
+    $this->shouldPull = option('wottpal.git.shouldPull');
+    $this->shouldPush = option('wottpal.git.shouldPush');
+    $this->shouldCommit = option('wottpal.git.shouldCommit');
+    $this->userHooks = option('wottpal.git.userHooks');
+    $this->gitBin = option('wottpal.git.gitBin');
+    $this->windowsMode = option('wottpal.git.windowsMode');
+    $this->debug = option('wottpal.git.debug');
   }
 
 
@@ -126,12 +126,12 @@ class GitterHelper {
       if ($this->shouldCommit && $this->hasChangesToCommit()) $this->commit("{$message}\nBy: {$this->user}");
       if ($this->shouldPush) $this->push();
 
-      if ($this->debug && !$this->hasChangesToCommit()) f::write(kirby()->roots()->index() .'/log-gitter-' . time() . '.txt', 'Hook fired but no changes to commit.');
+      if ($this->debug && !$this->hasChangesToCommit()) f::write(kirby()->roots()->index() .'/log-git-' . time() . '.txt', 'Hook fired but no changes to commit.');
 
     } catch(Exception $exception) {
       $errorMessage = 'Unable to update git: ' . $exception->getMessage();
 
-      if ($this->debug) f::write(kirby()->roots()->index() .'/log-gitter-' . time() . '.txt', $errorMessage);
+      if ($this->debug) f::write(kirby()->roots()->index() .'/log-git-' . time() . '.txt', $errorMessage);
       throw new Exception($errorMessage);
     }
   }
