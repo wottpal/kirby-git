@@ -14,13 +14,17 @@ class GitHelper {
 
   private $user;
   private $repo;
+  private $isInitialized;
 
 
   /**
   * Initializes the Helper-Class by gathering plugin-options.
   */
-  public function __construct() {
+  public function initOptions() {
+    $this->isInitialized = True;
+
     $this->user = kirby()->user()->name();
+    if ($this->user == '') $this->user = kirby()->user()->email();
     $this->path = option('wottpal.git.path');
     $this->branch = option('wottpal.git.branch');
     $this->shouldPull = option('wottpal.git.shouldPull');
@@ -118,9 +122,9 @@ class GitHelper {
   */
   public function changeHandler($message)
   {
-    try {
-      $this->initRepo();
+    if (!$this->isInitialized) $this->initOptions();
 
+    try {
       if ($this->branch) $this->getRepo()->checkout($this->branch);
       if ($this->shouldPull) $this->pull();
       if ($this->shouldCommit && $this->hasChangesToCommit()) $this->commit("{$message}\nBy: {$this->user}");
