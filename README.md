@@ -13,17 +13,28 @@ submodule update --init --recursive`.
 
 
 ## Options
+Set these in your `config.php` prefixed with `wottpal.git.`
 
 ```php
-'options' => [
-  'path' => kirby()->roots(),  // or just kirby()->roots()->content()
-  'branch' => 'master',
-  'shouldPull' => false,
-  'shouldPush' => false,
-  'shouldCommit' => true,
-  'userHooks' => false,
-  'gitBin' => '',
-  'windowsMode' => false,
-  'debug' => true
-]
+'path' => kirby()->roots(),  // or just kirby()->roots()->content()
+'branch' => 'master',
+'shouldPull' => false,
+'shouldPush' => false,
+'shouldCommit' => true,
+'userHooks' => false,
+'gitBin' => '',
+'windowsMode' => false,
+'debug' => false
+```
+
+## Log-Field
+
+A field named `gitlog` is included in the plugin which shows your whole Git History.
+
+![Git Log Field](gitlog-field.png)
+
+```yaml
+log:
+  type: gitlog
+  label: Git History
 ```

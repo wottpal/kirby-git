@@ -1,0 +1,14 @@
+
+.kirby-structure-item-content {
+  grid-template-columns: minmax(0,2fr) repeat(auto-fit,minmax(0,1fr));
+}
+.kirby-structure-item-content:hover {
+  background: hsla(0,0%,98%,.75);
+}
+
+.kirby-structure-item-text {
+  cursor: default;
+}
+.kirby-structure-item-text:hover {
+  background: inherit;
+}

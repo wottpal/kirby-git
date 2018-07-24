@@ -43,6 +43,7 @@ class GitHelper {
   private function initRepo()
   {
     if ($this->repo) return true;
+    if (!$this->isInitialized) $this->initOptions();
 
     if (!class_exists("Git")) {
       if (file_exists(__DIR__ . DS . 'Git.php' . DS. 'Git.php')) {
@@ -75,7 +76,7 @@ class GitHelper {
   /**
   * Returns the Git.php repository.
   */
-  private function getRepo() {
+  public function getRepo() {
     if ($this->repo == null) $this->initRepo();
 
     return $this->repo;

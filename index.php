@@ -130,6 +130,23 @@ Kirby::plugin('wottpal/git', [
       $gitHelper->changeHandler("Deleted User: {$user->name()}");
     },
 
+  ],
+
+  'fields' => [
+
+    'gitlog' => [
+      'computed' => [
+        'gitLog' => function () use ($gitHelper) {
+          $log = $gitHelper->getRepo()->log('{%n \"commit\": \"%H\",%n \"date\": \"%at\",%n \"message\": \"%s\",%n \"author\": \"%an\"%n},');
+          $log = rtrim($log,",");
+          $log = "[{$log}]";
+
+          return json_decode($log);
+        }
+      ]
+    ]
+
   ]
+
 
 ]);
