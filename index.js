@@ -62,7 +62,7 @@ panel.plugin("wottpal/git", {
 
       <k-button :icon="this.reversed ? 'angle-down' : 'angle-up'" slot="options" @click="reverse" v-if="log.length" />
 
-      <ul class="k-structure k-structure--git" v-if="log.length">
+      <ul class="k-structure k-structure--git k-structure--noAction" v-if="log.length">
         <li v-for="item in log" :key="item.commit" class="k-structure-item">
           <div class="k-structure-item-wrapper">
             <div class="k-structure-item-content">
@@ -113,17 +113,13 @@ panel.plugin("wottpal/git", {
       template: `
       <k-field v-bind="$attrs">
 
-      <ul class="k-structure" v-if="revisions.length">
+      <ul class="k-structure k-structure--git" v-if="revisions.length">
         <li v-for="item in revisions" :key="item.commit" class="k-structure-item">
           <div class="k-structure-item-wrapper">
             <div class="k-structure-item-content">
-            <p class="k-structure-item-text">
-              <span class="k-structure-item-label">Date</span>
+            <p class="k-structure-item-text k-structure-item-text--isSelected">
+              <span class="k-structure-item-label">{{item.commit}}</span>
               <span>{{item.dateFormatted}}</span>
-            </p>
-            <p class="k-structure-item-text">
-              <span class="k-structure-item-label">Commit</span>
-              <span>{{item.commit}}</span>
             </p>
             </div>
           </div>

@@ -44,7 +44,7 @@ return [
 
           // Format date
           $date = $revision['date'];
-          $revisions[$idx]['dateFormatted'] = date("Y-m-d", $date);
+          $revisions[$idx]['dateFormatted'] = date("Y-m-d, H:i", $date);
 
           // Gather content
           $revisionCommand = "show {$revision['commit']}:{$formerContentFile}";
