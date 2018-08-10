@@ -1,14 +1,14 @@
 
-.k-structure--gitLog .k-structure-item-content {
+.k-structure--git .k-structure-item-content {
   grid-template-columns: minmax(0,2fr) repeat(auto-fit,minmax(0,1fr));
 }
-.k-structure--gitLog .k-structure-item-content:hover {
+.k-structure--git .k-structure-item-content:hover {
   background: hsla(0,0%,98%,.75);
 }
 
-.k-structure--gitLog .k-structure-item-text {
+.k-structure--git .k-structure-item-text {
   cursor: default;
 }
-.k-structure--gitLog .k-structure-item-text:hover {
+.k-structure--git .k-structure-item-text:hover {
   background: inherit;
 }

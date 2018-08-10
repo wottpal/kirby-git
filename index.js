@@ -1,4 +1,6 @@
 panel.plugin("wottpal/git", {
+
+
   fields: {
     gitlog: {
 
@@ -60,13 +62,70 @@ panel.plugin("wottpal/git", {
 
       <k-button :icon="this.reversed ? 'angle-down' : 'angle-up'" slot="options" @click="reverse" v-if="log.length" />
 
-      <ul class="k-structure k-structure--gitLog" v-if="log.length">
+      <ul class="k-structure k-structure--git" v-if="log.length">
         <li v-for="item in log" :key="item.commit" class="k-structure-item">
-        <div class="k-structure-item-wrapper">
-          <div class="k-structure-item-content">
-            <p class="k-structure-item-text">{{item.message}}</p>
-            <p class="k-structure-item-text">{{item.author}}</p>
-            <p class="k-structure-item-text">{{item.date}}</p>
+          <div class="k-structure-item-wrapper">
+            <div class="k-structure-item-content">
+              <p class="k-structure-item-text">{{item.message}}</p>
+              <p class="k-structure-item-text">{{item.author}}</p>
+              <p class="k-structure-item-text">{{item.date}}</p>
+            </div>
+          </div>
+        </li>
+      </ul>
+
+      <k-box v-else>
+      No commits or no repository was found.
+      </k-box>
+
+      </k-field>
+      `
+    },
+
+
+
+
+    gitRevisions: {
+
+      props: {
+        gitRevisions: Array,
+      },
+
+      data: function() {
+        return {
+          revisions: [],
+        }
+      },
+
+      mounted: function () {
+        this.initRevisions()
+      },
+
+      methods: {
+
+        initRevisions() {
+          console.log(this.gitRevisions)
+          this.revisions = JSON.parse(JSON.stringify(this.gitRevisions))
+        },
+
+      },
+
+      template: `
+      <k-field v-bind="$attrs">
+
+      <ul class="k-structure" v-if="revisions.length">
+        <li v-for="item in revisions" :key="item.commit" class="k-structure-item">
+          <div class="k-structure-item-wrapper">
+            <div class="k-structure-item-content">
+            <p class="k-structure-item-text">
+              <span class="k-structure-item-label">Date</span>
+              <span>{{item.dateFormatted}}</span>
+            </p>
+            <p class="k-structure-item-text">
+              <span class="k-structure-item-label">Commit</span>
+              <span>{{item.commit}}</span>
+            </p>
+            </div>
           </div>
         </li>
       </ul>
@@ -78,6 +137,7 @@ panel.plugin("wottpal/git", {
       </k-field>
       `
     }
+
 
   }
 });
