@@ -23,7 +23,7 @@ panel.plugin("wottpal/git", {
 
           this.log.map(item => {
 
-            // Get Kirby-Author
+            // Get k-Author
             const byString = 'By: '
             const byLocation = item.message.indexOf(byString)
 
@@ -56,26 +56,26 @@ panel.plugin("wottpal/git", {
       },
 
       template: `
-      <kirby-field v-bind="$attrs" :help="log.length + ' Commits'">
+      <k-field v-bind="$attrs" :help="log.length + ' Commits'">
 
-      <kirby-button :icon="this.reversed ? 'angle-down' : 'angle-up'" slot="options" @click="reverse" v-if="log.length" />
+      <k-button :icon="this.reversed ? 'angle-down' : 'angle-up'" slot="options" @click="reverse" v-if="log.length" />
 
-      <ul class="kirby-structure" v-if="log.length">
-        <li v-for="item in log" :key="item.commit" class="kirby-structure-item">
-        <div class="kirby-structure-item-wrapper">
-          <div class="kirby-structure-item-content">
-            <p class="kirby-structure-item-text">{{item.message}}</p>
-            <p class="kirby-structure-item-text">{{item.author}}</p>
-            <p class="kirby-structure-item-text">{{item.date}}</p>
+      <ul class="k-structure k-structure--gitLog" v-if="log.length">
+        <li v-for="item in log" :key="item.commit" class="k-structure-item">
+        <div class="k-structure-item-wrapper">
+          <div class="k-structure-item-content">
+            <p class="k-structure-item-text">{{item.message}}</p>
+            <p class="k-structure-item-text">{{item.author}}</p>
+            <p class="k-structure-item-text">{{item.date}}</p>
           </div>
         </li>
       </ul>
 
-      <kirby-box v-else>
+      <k-box v-else>
       No commits or no repository was found.
-      </kirby-box>
+      </k-box>
 
-      </kirby-field>
+      </k-field>
       `
     }
 
