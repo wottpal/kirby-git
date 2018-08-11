@@ -31,10 +31,27 @@ Set these in your `config.php` prefixed with `wottpal.git.`
 
 A field named `gitlog` is included in the plugin which shows your whole Git History.
 
+```yaml
+revisions:
+  type: gitlog
+  label: Git History
+  ```
+
 ![Git Log Field](gitlog-field.png)
+
+## Revisions-Field
+
+A field named `gitRevisions` is included in the plugin which shows you all commits where the current page was edited and makes it possible to revert changes to a specific commit.
+
+Important: With the current state you need to define all fieldnames of which you want the content to be changed.
 
 ```yaml
 log:
-  type: gitlog
-  label: Git History
-```
+  type: gitRevisions
+  label: Revisions
+  fields:
+    - title
+    - text
+  ```
+
+![Git Revisions Field](gitrevisions-field.png)
