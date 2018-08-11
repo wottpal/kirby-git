@@ -113,7 +113,8 @@ class GitHelper {
   * Returns `true` if there are changes to commit.
   */
   public function hasChangesToCommit() {
-    $result = $this->getRepo()->run('status --porcelain');
+    // $result = $this->getRepo()->run('status --porcelain');
+    $result = $this->getRepo()->run('ls-files -m');
     return $result !== '';
   }
 
@@ -128,7 +129,7 @@ class GitHelper {
     try {
       if ($this->branch) $this->getRepo()->checkout($this->branch);
       if ($this->shouldPull) $this->pull();
-      if ($this->shouldCommit && $this->hasChangesToCommit()) $this->commit("{$message}\nBy: {$this->user}");
+      if ($this->shouldCommit && $this->hasChangesToCommit()) $this->commit("{$message}\nBy: {$this->user}", true);
       if ($this->shouldPush) $this->push();
 
       if ($this->debug && !$this->hasChangesToCommit()) f::write(kirby()->roots()->index() .'/log-git-' . time() . '.txt', 'Hook fired but no changes to commit.');

@@ -1,4 +1,40 @@
+
+
 panel.plugin("wottpal/git", {
+
+  // Props to @rasteiner
+  use: [
+    function (Vue) {
+      const original = Vue.options.components["k-fields-section"]
+      Vue.component('k-fields-section', {
+        extends: original,
+        created() {
+          this.$events.$on('values-push', this.valuesPush)
+        },
+        destroyed() {
+          this.$events.$off('values-push', this.valuesPush)
+        },
+        methods: {
+          valuesPush(values) {
+            let changes = false
+            for (let k in values) {
+              if (k in this.values) {
+                this.values[k] = values[k]
+                changes = true
+              }
+            }
+
+            console.log(values)
+
+            if (changes) {
+              this.input(this.values)
+            }
+          }
+        }
+      })
+    }
+  ],
+
 
 
   fields: {
@@ -63,15 +99,15 @@ panel.plugin("wottpal/git", {
       <k-button :icon="this.reversed ? 'angle-down' : 'angle-up'" slot="options" @click="reverse" v-if="log.length" />
 
       <ul class="k-structure k-structure--git k-structure--noAction" v-if="log.length">
-        <li v-for="item in log" :key="item.commit" class="k-structure-item">
-          <div class="k-structure-item-wrapper">
-            <div class="k-structure-item-content">
-              <p class="k-structure-item-text">{{item.message}}</p>
-              <p class="k-structure-item-text">{{item.author}}</p>
-              <p class="k-structure-item-text">{{item.date}}</p>
-            </div>
-          </div>
-        </li>
+      <li v-for="item in log" :key="item.commit" class="k-structure-item">
+      <div class="k-structure-item-wrapper">
+      <div class="k-structure-item-content">
+      <p class="k-structure-item-text">{{item.message}}</p>
+      <p class="k-structure-item-text">{{item.author}}</p>
+      <p class="k-structure-item-text">{{item.date}}</p>
+      </div>
+      </div>
+      </li>
       </ul>
 
       <k-box v-else>
@@ -89,6 +125,7 @@ panel.plugin("wottpal/git", {
 
       props: {
         gitRevisions: Array,
+        fields: Array
       },
 
       data: function() {
@@ -104,8 +141,34 @@ panel.plugin("wottpal/git", {
       methods: {
 
         initRevisions() {
-          console.log(this.gitRevisions)
+          // console.log(this.gitRevisions)
           this.revisions = JSON.parse(JSON.stringify(this.gitRevisions))
+
+          // Filter out revisions which have none of the given keys
+          this.revisions = this.revisions.filter(revision => {
+            const availableFields = Object.keys(revision['content'])
+            const intersection = availableFields.filter(value => -1 !== this.fields.indexOf(value))
+            revision.updateFields = intersection
+            return intersection.length > 0
+          })
+
+          // Select latest revision
+          if (this.revisions.length > 0) this.revisions[0].selected = true;
+
+        },
+
+        applyRevision(revision) {
+          this.revisions.forEach( revision => revision.selected = false )
+          revision.selected = true
+          this.$forceUpdate()
+
+          // console.log(revision.content)
+          // console.log(revision.updateFields)
+
+          for(field of revision.updateFields) {
+            const fieldContent = revision['content'][field]
+            this.$events.$emit('values-push', { [field] : fieldContent })
+          }
         },
 
       },
@@ -114,16 +177,21 @@ panel.plugin("wottpal/git", {
       <k-field v-bind="$attrs">
 
       <ul class="k-structure k-structure--git" v-if="revisions.length">
-        <li v-for="item in revisions" :key="item.commit" class="k-structure-item">
-          <div class="k-structure-item-wrapper">
-            <div class="k-structure-item-content">
-            <p class="k-structure-item-text k-structure-item-text--isSelected">
-              <span class="k-structure-item-label">{{item.commit}}</span>
-              <span>{{item.dateFormatted}}</span>
-            </p>
-            </div>
-          </div>
-        </li>
+      <li v-for="(item, idx) in revisions" :key="item.commit" class="k-structure-item" @click="applyRevision(item)" ref="structureItem">
+      <div class="k-structure-item-wrapper">
+      <div class="k-structure-item-content">
+      <p class="k-structure-item-text" v-bind:class="{ 'k-structure-item-text--isSelected' : item.selected }">
+      <span class="k-structure-item-label">{{item.commit}}</span>
+      <span>
+      {{item.dateFormatted}}
+      </span>
+      <span v-if="idx == 0">
+      (Current)
+      </span>
+      </p>
+      </div>
+      </div>
+      </li>
       </ul>
 
       <k-box v-else>

@@ -50,6 +50,7 @@ return [
           $revisionCommand = "show {$revision['commit']}:{$formerContentFile}";
           $revisionContent = $gitHelper->getRepo()->run($revisionCommand);
           $revisionContent = Kirby\Data\Yaml::decode($revisionContent);
+          $revisionContent = array_change_key_case($revisionContent, CASE_LOWER);
           $revisions[$idx]['content'] = $revisionContent;
 
           // $revisions[$idx]['test'] = $parent->blueprint();
