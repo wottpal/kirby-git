@@ -24,8 +24,6 @@ panel.plugin("wottpal/git", {
               }
             }
 
-            console.log(values)
-
             if (changes) {
               this.input(this.values)
             }
@@ -125,23 +123,66 @@ panel.plugin("wottpal/git", {
 
       props: {
         gitRevisions: Array,
-        fields: Array
+        fields: Array,
+        limit: {
+          default: 5,
+          type: Number
+        }
       },
 
       data: function() {
         return {
           revisions: [],
+          paginatedRevisions: []
         }
       },
 
+      created: function() {
+        this.$events.$on('form.change', this.onFormChange);
+        this.$events.$on('form.save', this.onFormSave);
+        this.$events.$on('form.reset', this.onFormReset);
+      },
+      destroyed: function () {
+        this.$events.$off('form.change', this.onFormChange);
+        this.$events.$off('form.save', this.onFormSave);
+        this.$events.$off('form.reset', this.onFormReset);
+      },
+
+
       mounted: function () {
         this.initRevisions()
+        this.paginate()
+      },
+
+      computed: {
+
+        paginationOptions() {
+          return {
+            limit: this.limit,
+            align: "center",
+            details: true,
+            keys: this.revisions.map( revision => revision.commit ),
+            total: this.revisions.length,
+            hide: false,
+          }
+        }
+
       },
 
       methods: {
 
+        onFormChange() {
+
+        },
+        onFormSave() {
+
+        },
+        onFormReset() {
+          if (this.revisions.length) this.revisions[0].selected = true
+        },
+
         initRevisions() {
-          // console.log(this.gitRevisions)
+          console.log(this.gitRevisions)
           this.revisions = JSON.parse(JSON.stringify(this.gitRevisions))
 
           // Filter out revisions which have none of the given keys
@@ -152,8 +193,11 @@ panel.plugin("wottpal/git", {
             return intersection.length > 0
           })
 
-          // Select latest revision
-          if (this.revisions.length > 0) this.revisions[0].selected = true;
+          // Select latest revision and mark it as current
+          if (this.revisions.length) {
+            this.revisions[0].dateFormatted += " (Current)";
+            this.revisions[0].selected = true
+          }
 
         },
 
@@ -162,37 +206,55 @@ panel.plugin("wottpal/git", {
           revision.selected = true
           this.$forceUpdate()
 
-          // console.log(revision.content)
-          // console.log(revision.updateFields)
-
           for(field of revision.updateFields) {
             const fieldContent = revision['content'][field]
             this.$events.$emit('values-push', { [field] : fieldContent })
           }
         },
 
+        paginate(event) {
+          let start = 0
+          let end = Math.min(this.revisions.length, this.limit)
+
+          if (event) {
+            start = event.start - 1
+            end = event.end
+          }
+
+          this.paginatedRevisions = this.revisions.slice(start, end)
+        }
+
       },
 
       template: `
-      <k-field v-bind="$attrs">
+
+      <k-field v-bind="$attrs" v-if="revisions.length">
+
 
       <ul class="k-structure k-structure--git" v-if="revisions.length">
-      <li v-for="(item, idx) in revisions" :key="item.commit" class="k-structure-item" @click="applyRevision(item)" ref="structureItem">
-      <div class="k-structure-item-wrapper">
-      <div class="k-structure-item-content">
-      <p class="k-structure-item-text" v-bind:class="{ 'k-structure-item-text--isSelected' : item.selected }">
-      <span class="k-structure-item-label">{{item.commit}}</span>
-      <span>
-      {{item.dateFormatted}}
-      </span>
-      <span v-if="idx == 0">
-      (Current)
-      </span>
-      </p>
-      </div>
-      </div>
-      </li>
+        <li v-for="(item, idx) in paginatedRevisions" :key="item.commit" class="k-structure-item" @click="{ item.selected ? null : applyRevision(item) }" ref="structureItem">
+          <div class="k-structure-item-wrapper">
+            <div class="k-structure-item-content">
+              <p class="k-structure-item-text" v-bind:class="{ 'k-structure-item-text--isSelected' : item.selected }">
+                <span class="k-structure-item-label">Date</span>
+                <span>{{item.dateFormatted}}</span>
+              </p>
+              <p class="k-structure-item-text" v-bind:class="{ 'k-structure-item-text--isSelected' : item.selected }">
+                <span class="k-structure-item-label">Commit</span>
+                <span>{{item.commit}}</span>
+              </p>
+            </div>
+          </div>
+        </li>
       </ul>
+
+
+      <k-pagination
+      v-bind="paginationOptions"
+      ref="pagination"
+      @paginate="paginate($event)"
+      />
+
 
       <k-box v-else>
       No commits or no repository was found.

@@ -19,10 +19,13 @@ return [
     'computed' => [
       'gitRevisions' => function () use ($gitHelper) {
         $parent = $this->model();
+
+        // Get the relative content file path
         $contentFile = $parent->contentFile();
         $contentFile = substr($contentFile, strlen(kirby()->root()) + 1);
 
-        $commitFormat = '{%n \"commit\": \"%H\",%n \"date\" : \"%at\"%n},';
+        // Get all commits where the content file was modified
+        $commitFormat = '{%n \"commit\": \"%h\",%n \"date\" : \"%at\"%n},';
         $logCommand = 'log --follow --name-only --pretty=format:"' . $commitFormat . '" -- ' . $contentFile;
         $revisions = $gitHelper->getRepo()->run($logCommand);
 
@@ -46,15 +49,21 @@ return [
           $date = $revision['date'];
           $revisions[$idx]['dateFormatted'] = date("Y-m-d, H:i", $date);
 
-          // Gather content
+          // Get (former) template from filename
+          $formerTemplate = basename(basename($formerContentFile, ".txt"), ".md");
+          $revisions[$idx]['template'] = $formerTemplate;
+
+          // Gather and decode content
           $revisionCommand = "show {$revision['commit']}:{$formerContentFile}";
           $revisionContent = $gitHelper->getRepo()->run($revisionCommand);
-          $revisionContent = Kirby\Data\Yaml::decode($revisionContent);
-          $revisionContent = array_change_key_case($revisionContent, CASE_LOWER);
+          $revisionContent = Kirby\Data\Txt::decode($revisionContent);
+          $virtualPage = new Kirby\Cms\Page([
+             'template' => $formerTemplate,
+             'content' => $revisionContent,
+             'slug' => 'totally-irrelevant'
+          ]);
+          $revisionContent = Kirby\Cms\Form::for($virtualPage)->values();
           $revisions[$idx]['content'] = $revisionContent;
-
-          // $revisions[$idx]['test'] = $parent->blueprint();
-          // $revisions[$idx]['relative_path'] = $contentFile;
 
 
         }
