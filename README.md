@@ -55,3 +55,12 @@ log:
   ```
 
 ![Git Revisions Field](gitrevisions-field.png)
+
+
+# Contributing
+## Build instructions
+
+First, install development dependencies: `npm i`  
+
+ - Development build: `npm run dev`
+ - Production build: `npm run build`
