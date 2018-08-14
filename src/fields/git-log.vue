@@ -44,7 +44,7 @@ export default {
       this.log = JSON.parse(JSON.stringify(this.gitLog));
 
       this.log.map(item => {
-        // Get k-Author
+        // Get Author
         const byString = "By: ";
         const byLocation = item.message.indexOf(byString);
 
@@ -94,10 +94,4 @@ export default {
   .k-structure--noAction .k-structure-item-text:hover {
     background: inherit;
   }
-
-  .k-structure-item-text--isSelected {
-    background: hsl(207, 97%, 97%);
-    pointer-events: none;
-  }
-
 </style>

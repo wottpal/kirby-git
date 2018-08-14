@@ -25,7 +25,7 @@ return [
         $contentFile = substr($contentFile, strlen(kirby()->root()) + 1);
 
         // Get all commits where the content file was modified
-        $commitFormat = '{%n \"commit\": \"%h\",%n \"date\" : \"%at\"%n},';
+        $commitFormat = '{%n \"hash\": \"%h\",%n \"date\" : \"%at\"%n,%n \"message\": \"%s\",%n \"author\": \"%an\"},';
         $logCommand = 'log --follow --name-only --pretty=format:"' . $commitFormat . '" -- ' . $contentFile;
         $revisions = $gitHelper->getRepo()->run($logCommand);
 
@@ -54,7 +54,7 @@ return [
           $revisions[$idx]['template'] = $formerTemplate;
 
           // Gather and decode content
-          $revisionCommand = "show {$revision['commit']}:{$formerContentFile}";
+          $revisionCommand = "show {$revision['hash']}:{$formerContentFile}";
           $revisionContent = $gitHelper->getRepo()->run($revisionCommand);
           $revisionContent = Kirby\Data\Txt::decode($revisionContent);
           $virtualPage = new Kirby\Cms\Page([

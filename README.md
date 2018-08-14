@@ -52,6 +52,11 @@ log:
   fields:
     - title
     - text
+  limit: 5
+  columns:
+    - author
+    - hash
+    - message
   ```
 
 ![Git Revisions Field](gitrevisions-field.png)
@@ -60,7 +65,7 @@ log:
 # Contributing
 ## Build instructions
 
-First, install development dependencies: `npm i`  
+First, install development dependencies: `npm i`
 
  - Development build: `npm run dev`
  - Production build: `npm run build`

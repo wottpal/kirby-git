@@ -2,17 +2,15 @@
   <k-field v-bind="$attrs" v-if="revisions.length">
     <div v-if="revisions.length">
       <ul class="k-structure k-structure--git">
-        <li v-for="(item) in paginatedRevisions" :key="item.commit" class="k-structure-item" @click="item.selected ? null : applyRevision(item)" ref="structureItem">
+        <li v-for="item in paginatedRevisions" :key="item.hash" class="k-structure-item" @click="item.selected ? null : applyRevision(item)" ref="structureItem" v-bind:class="{ 'k-structure-item--isSelected' : item.selected }">
           <div class="k-structure-item-wrapper">
             <div class="k-structure-item-content">
-              <p class="k-structure-item-text" v-bind:class="{ 'k-structure-item-text--isSelected' : item.selected }">
-                <span class="k-structure-item-label">Date</span>
-                <span>{{item.dateFormatted}}</span>
+
+              <p v-for="(name, key) in infoColumns" class="k-structure-item-text">
+                <span class="k-structure-item-label">{{ name }}</span>
+                <span>{{ item[key] }}</span>
               </p>
-              <p class="k-structure-item-text" v-bind:class="{ 'k-structure-item-text--isSelected' : item.selected }">
-                <span class="k-structure-item-label">Commit</span>
-                <span>{{item.commit}}</span>
-              </p>
+
             </div>
           </div>
         </li>
@@ -40,6 +38,10 @@ export default {
       type: Array,
       default: []
     },
+    columns: {
+      type: Array,
+      default: []
+    },
     limit: {
       default: 5,
       type: Number
@@ -48,6 +50,9 @@ export default {
 
   data: function() {
     return {
+      infoColumns: {
+        dateFormatted: "Date"
+      },
       revisions: [],
       paginatedRevisions: []
     }
@@ -66,6 +71,7 @@ export default {
 
 
   mounted: function () {
+    this.initInfoColumns()
     this.initRevisions()
     this.paginate()
   },
@@ -77,7 +83,7 @@ export default {
         limit: this.limit,
         align: "center",
         details: true,
-        keys: this.revisions.map( revision => revision.commit ),
+        keys: this.revisions.map( revision => revision.hash ),
         total: this.revisions.length,
         hide: false,
       }
@@ -90,11 +96,27 @@ export default {
     onFormChange() {
 
     },
+
     onFormSave() {
 
     },
+
     onFormReset() {
       if (this.revisions.length) this.revisions[0].selected = true
+    },
+
+    initInfoColumns() {
+      const availableColumns = {
+        author: "Author",
+        hash: "Commit-Hash",
+        message: "Commit-Message"
+      }
+
+      for (const column of this.columns) {
+        if (column in availableColumns) {
+          this.infoColumns[column] = availableColumns[column]
+        }
+      }
     },
 
     initRevisions() {
@@ -107,6 +129,21 @@ export default {
         const intersection = availableFields.filter(value => -1 !== this.fields.indexOf(value))
         revision.updateFields = intersection
         return intersection.length > 0
+      })
+
+      // Gather associated author (Kirby/Git) for each commit
+      this.revisions = this.revisions.map(revision => {
+        const byString = "By: "
+        const byLocation = revision.message.indexOf(byString)
+
+        if (byLocation != -1) {
+          revision.author = revision.message.substring(byLocation + byString.length)
+          revision.authorSource = "Kirby"
+        } else {
+          revision.authorSource = "Git"
+        }
+
+        return revision
       })
 
       // Select latest revision and mark it as current
@@ -143,3 +180,12 @@ export default {
   },
 }
 </script>
+
+<style>
+
+.k-structure-item--isSelected p {
+  background: hsl(207, 97%, 97%);
+  pointer-events: none;
+}
+
+</style>
