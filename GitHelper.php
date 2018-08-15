@@ -38,6 +38,16 @@ class GitHelper {
 
 
   /**
+  * Returns `true` if user-hooks are enabled in the config
+  * IMPORTANT: It's a security risk to put sensible user-data under version-control.
+  */
+  public function userHooksEnabled() {
+    if (!$this->isInitialized) $this->initOptions();
+    return $this->userHooks;
+  }
+
+
+  /**
   * Initializes the Git.php repository object.
   */
   private function initRepo()

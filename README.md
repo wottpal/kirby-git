@@ -20,7 +20,7 @@ Set these in your `config.php` prefixed with `wottpal.git.`
 'branch' => 'master',
 'shouldPull' => false,
 'shouldPush' => false,
-'shouldCommit' => true,
+'shouldCommit' => false,
 'userHooks' => false,
 'gitBin' => '',
 'windowsMode' => false,
@@ -29,12 +29,14 @@ Set these in your `config.php` prefixed with `wottpal.git.`
 
 ## Log-Field
 
-A field named `gitlog` is included in the plugin which shows your whole Git History.
+A field named `gitLog` is included in the plugin which shows your whole Edit History. By setting `kirbyOnly` to `false` you can include developer-commits in the list as well.
 
 ```yaml
 revisions:
-  type: gitlog
-  label: Git History
+  type: gitLog
+  label: History
+  limit: 5
+  kirbyOnly: true
   ```
 
 ![Git Log Field](gitlog-field.png)
@@ -60,6 +62,13 @@ log:
   ```
 
 ![Git Revisions Field](gitrevisions-field.png)
+
+
+# ToDo
+
+- [ ] More conservative error-handling
+- [ ] Fixes if `content/` is root of repository
+- [ ] DRY `fields.php`
 
 
 # Contributing

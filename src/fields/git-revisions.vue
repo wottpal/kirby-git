@@ -1,5 +1,6 @@
 <template>
   <k-field v-bind="$attrs" v-if="revisions.length">
+
     <div v-if="revisions.length">
       <ul class="k-structure k-structure--git">
         <li v-for="item in paginatedRevisions" :key="item.hash" class="k-structure-item" @click="item.selected ? null : applyRevision(item)" ref="structureItem" v-bind:class="{ 'k-structure-item--isSelected' : item.selected }">
@@ -24,7 +25,7 @@
     </div>
 
     <k-box v-else>
-      No commits or no repository was found.
+      No commits or no repository found.
     </k-box>
 
   </k-field>

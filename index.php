@@ -11,7 +11,7 @@ Kirby::plugin('wottpal/git', [
     'branch' => 'master',
     'shouldPull' => false,
     'shouldPush' => false,
-    'shouldCommit' => true,
+    'shouldCommit' => false,
     'userHooks' => false,
     'gitBin' => '',
     'windowsMode' => false,

@@ -3,20 +3,38 @@
 
 return [
 
-  'gitlog' => [
+  'gitLog' => [
     'computed' => [
+
       'gitLog' => function () use ($gitHelper) {
-        $log = $gitHelper->getRepo()->log('{%n \"commit\": \"%H\",%n \"date\": \"%at\",%n \"message\": \"%s\",%n \"author\": \"%an\"%n},');
+        // Gather all commits and format as valid JSOn
+        $log = $gitHelper->getRepo()->log('{%n \"hash\": \"%h\",%n \"date\": \"%at\",%n \"message\": \"%s\",%n \"author\": \"%an\"},');
         $log = rtrim($log,",");
         $log = "[{$log}]";
+        $log = json_decode($log, true);
 
-        return json_decode($log);
+        foreach($log as $idx => $commit) {
+
+          // Format date
+          $date = $commit['date'];
+          $log[$idx]['dateFormatted'] = date("Y-m-d, H:i", $date);
+
+        }
+
+        return $log;
       }
+
     ]
   ],
 
+
   'gitRevisions' => [
     'computed' => [
+
+      // 'blueprintFields' => function () {
+      //   return $this->model()->blueprint();
+      // },
+
       'gitRevisions' => function () use ($gitHelper) {
         $parent = $this->model();
 
@@ -64,8 +82,6 @@ return [
           ]);
           $revisionContent = Kirby\Cms\Form::for($virtualPage)->values();
           $revisions[$idx]['content'] = $revisionContent;
-
-
         }
 
         return $revisions;
