@@ -2,31 +2,27 @@
   <k-field v-bind="$attrs">
 
     <div v-if="log.length">
-    <ul class="k-structure k-structure--git k-structure--noAction">
+    <ul class="k-structure k-structure--git k-structure--noAction k-structure--firstColumnLarger">
       <li v-for="item in paginatedLog" :key="item.hash" class="k-structure-item">
         <div class="k-structure-item-wrapper">
           <div class="k-structure-item-content">
 
-
             <p class="k-structure-item-text">
               <span class="k-structure-item-label">{{ item.commitType }}</span>
-              <span class="k-structure-item-path">
-                <span v-for="component in item.commitSubject">
-                  {{ component }}
-                </span>
+              <span class="k-structure-item-path" :title="item.commitSubject.join(' / ')">
+                <span v-for="component in item.commitSubject" v-html="component" />
               </span>
             </p>
 
             <p class="k-structure-item-text">
               <span class="k-structure-item-label">Author</span>
-              <span>{{ item.author }}</span>
+              <span :title="item.author">{{ item.author }}</span>
             </p>
 
             <p class="k-structure-item-text">
               <span class="k-structure-item-label">Date</span>
-              <span>{{ item.dateFormatted }}</span>
+              <span :title="item.dateFormatted">{{ item.dateFormatted }}</span>
             </p>
-
 
           </div>
         </div>
@@ -113,7 +109,9 @@ export default {
 
         if (commit.authorSource == "Kirby" && match && match.length >= 2) {
           commit.commitType = match[1]
-          commit.commitSubject = match[2].split('/')
+          commit.commitSubject = match[2].trim().split('/')
+          commit.commitSubject = commit.commitSubject.map(component => component.replace('None', '<span class="k-structure-item-path__none">None</span>'))
+
         } else {
           commit.commitType = "Developer Commit"
           commit.commitSubject = [ commit.message ]
@@ -149,9 +147,9 @@ export default {
 <style>
 
   /* Enlarge first column */
-  /* .k-structure--git .k-structure-item-content {
+  .k-structure--firstColumnLarger .k-structure-item-content {
     grid-template-columns: minmax(0,2fr) repeat(auto-fit,minmax(0,1fr));
-  } */
+  }
 
   /* Structure-Field without any action */
   .k-structure--noAction .k-structure-item-content:hover {
@@ -175,6 +173,12 @@ export default {
     opacity: .25;
     font-weight: normal;
     content: " / ";
+  }
+  .k-structure-item-path__none {
+
+    font-weight: normal !important;
+    font-style: italic;
+    color: gray;
   }
 
 </style>

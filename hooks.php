@@ -16,19 +16,24 @@ return [
     $gitHelper->changeHandler("Deleted Page: {$page->id()}");
   },
   'page.changeNum:after' => function ($newPage,$oldPage) use ($gitHelper) {
-    $gitHelper->changeHandler("Sorted Page: {$newPage->id()} ({$oldPage->num()} → {$newPage->num()})");
+    $oldNum = $oldPage->num() ?? "None";
+    $gitHelper->changeHandler("Sorted Page: {$newPage->id()} ({$oldNum} → {$newPage->num()})");
   },
   'page.changeSlug:after' => function ($newPage,$oldPage) use ($gitHelper) {
-    $gitHelper->changeHandler("Changed Slug: {$newPage->id()} ({$oldPage->slug()} → {$newPage->slug()})");
+    $oldSlug = $oldPage->slug() ?? "None";
+    $gitHelper->changeHandler("Changed Slug: {$newPage->id()} ({$oldSlug} → {$newPage->slug()})");
   },
   'page.changeStatus:after' => function ($newPage,$oldPage) use ($gitHelper) {
-    $gitHelper->changeHandler("Changed Status: {$newPage->id()} ({$oldPage->status()} → {$newPage->status()})");
+    $oldStatus = $oldPage->status() ?? "None";
+    $gitHelper->changeHandler("Changed Status: {$newPage->id()} ({$oldStatus} → {$newPage->status()})");
   },
   'page.changeTemplate:after' => function ($newPage,$oldPage) use ($gitHelper) {
-    $gitHelper->changeHandler("Changed Template: {$newPage->id()} ({$oldPage->template()} → {$newPage->template()})");
+    $oldTemplate = $oldPage->template() ?? "None";
+    $gitHelper->changeHandler("Changed Template: {$newPage->id()} ({$oldTemplate} → {$newPage->template()})");
   },
   'page.changeTitle:after' => function ($newPage,$oldPage) use ($gitHelper) {
-    $gitHelper->changeHandler("Changed Title: {$newPage->id()} ({$oldPage->title()} → {$newPage->title()})");
+    $oldTitle = $oldPage->title() ?? "None";
+    $gitHelper->changeHandler("Changed Title: {$newPage->id()} ({$oldTitle} → {$newPage->title()})");
   },
 
   /**
@@ -41,10 +46,12 @@ return [
     $gitHelper->changeHandler("Deleted File: {$file->id()}");
   },
   'file.changeName:after' => function ($newFile,$oldFile) use ($gitHelper) {
-    $gitHelper->changeHandler("Changed Filename: {$newFile->id()} ({$oldFile->filename()} → {$newFile->filename()})");
+    $oldFilename = $oldFile->filename() ?? "None";
+    $gitHelper->changeHandler("Changed Filename: {$newFile->id()} ({$oldFilename} → {$newFile->filename()})");
   },
   'file.changeSort:after' => function ($newFile,$oldFile) use ($gitHelper) {
-    $gitHelper->changeHandler("Sorted File: {$newFile->id()} ({$oldFile->sort()} → {$newFile->sort()})");
+    $oldSort = $oldFile->sort() ?? "None";
+    $gitHelper->changeHandler("Sorted File: {$newFile->id()} ({$oldSort} → {$newFile->sort()})");
   },
   'file.update:after' => function ($newFile,$oldFile) use ($gitHelper) {
     $gitHelper->changeHandler("Edited File-Metadata: {$newFile->id()}");
@@ -85,7 +92,8 @@ return [
   'user.changeEmail:after' => function ($newUser, $oldUser) use ($gitHelper) {
     if (!$gitHelper->userHooksEnabled()) return;
     $name = $newUser->name() ?? $newUser->email();
-    $gitHelper->changeHandler("Changed E-Mail: {$name} ({$oldUser->email()} → {$newUser->email()})");
+    $oldEmail = $oldUser->email() ?? "None";
+    $gitHelper->changeHandler("Changed E-Mail: {$name} ({$oldEmail} → {$newUser->email()})");
   },
   'user.changeName:after' => function ($newUser, $oldUser) use ($gitHelper) {
     if (!$gitHelper->userHooksEnabled()) return;
@@ -97,7 +105,8 @@ return [
   'user.changeLanguage:after' => function ($newUser, $oldUser) use ($gitHelper) {
     if (!$gitHelper->userHooksEnabled()) return;
     $name = $newUser->name() ?? $newUser->email();
-    $gitHelper->changeHandler("Changed Language: {$name} ({$oldUser->language()} → {$newUser->language()})");
+    $oldLang = $oldUser->language() ?? "None";
+    $gitHelper->changeHandler("Changed Language: {$name} ({$oldLang} → {$newUser->language()})");
   },
   'user.changePassword:after' => function ($newUser, $oldUser) use ($gitHelper) {
     if (!$gitHelper->userHooksEnabled()) return;
@@ -107,7 +116,8 @@ return [
   'user.changeRole:after' => function ($newUser, $oldUser) use ($gitHelper) {
     if (!$gitHelper->userHooksEnabled()) return;
     $name = $newUser->name() ?? $newUser->email();
-    $gitHelper->changeHandler("Changed Role: {$name} ({$oldUser->role()} → {$newUser->role()})");
+    $oldRole = $oldUser->role() ?? "None";
+    $gitHelper->changeHandler("Changed Role: {$name} ({$oldRole} → {$newUser->role()})");
   },
   'user.create:after' => function ($user) use ($gitHelper) {
     if (!$gitHelper->userHooksEnabled()) return;
