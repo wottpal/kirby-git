@@ -34,6 +34,7 @@ class GitHelper {
     $this->gitBin = option('wottpal.git.gitBin');
     $this->windowsMode = option('wottpal.git.windowsMode');
     $this->debug = option('wottpal.git.debug');
+    $this->logFile = kirby()->roots()->index() . DS . option('wottpal.git.logFile');
   }
 
 
@@ -123,8 +124,9 @@ class GitHelper {
   * Returns `true` if there are changes to commit.
   */
   public function hasChangesToCommit() {
-    // $result = $this->getRepo()->run('status --porcelain');
-    $result = $this->getRepo()->run('ls-files -m');
+    $result = $this->getRepo()->run('status --porcelain');
+    // Didn't show new dirs
+    // $result = $this->getRepo()->run('ls-files -m');
     return $result !== '';
   }
 
@@ -142,13 +144,29 @@ class GitHelper {
       if ($this->shouldCommit && $this->hasChangesToCommit()) $this->commit("{$message}\nBy: {$this->user}", true);
       if ($this->shouldPush) $this->push();
 
-      if ($this->debug && !$this->hasChangesToCommit()) f::write(kirby()->roots()->index() .'/log-git-' . time() . '.txt', 'Hook fired but no changes to commit.');
+      if (!$this->hasChangesToCommit() && $this->shouldCommit) $this->log('Hook fired but no changes');
+      elseif ($this->shouldCommit) $this->log('Committed successfully');
 
     } catch(Exception $exception) {
       $errorMessage = 'Unable to update git: ' . $exception->getMessage();
 
-      if ($this->debug) f::write(kirby()->roots()->index() .'/log-git-' . time() . '.txt', $errorMessage);
-      throw new Exception($errorMessage);
+      $this->log($errorMessage);
+      // throw new Exception($errorMessage);
     }
   }
+
+
+  /**
+  * Creates a new log-message in the log-file.
+  */
+  private function log($message) {
+    if (!$this->isInitialized) $this->initOptions();
+    if (!$this->debug) return;
+
+    $date = date("Y-m-d, H:i", time());
+    $message = "[{$date}] {$message}\n";
+
+    file_put_contents($this->logFile, $message, FILE_APPEND);
+  }
+
 }

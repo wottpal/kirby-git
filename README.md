@@ -69,6 +69,7 @@ log:
 - [ ] More conservative error-handling
 - [ ] Fixes if `content/` is root of repository
 - [ ] DRY `fields.php`
+- [ ] Improve debug-logging
 
 
 # Contributing

@@ -15,7 +15,8 @@ Kirby::plugin('wottpal/git', [
     'userHooks' => false,
     'gitBin' => '',
     'windowsMode' => false,
-    'debug' => false
+    'debug' => false,
+    'logFile' => 'git-log.txt'
   ],
 
   'hooks' => require_once __DIR__ . DS . 'hooks.php',
