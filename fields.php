@@ -40,7 +40,7 @@ return [
 
         // Get the relative content file path
         $contentFile = $parent->contentFile();
-        $contentFile = substr($contentFile, strlen(kirby()->root()) + 1);
+        $contentFile = substr($contentFile, strlen($gitHelper->path()) + 1);
 
         // Get all commits where the content file was modified
         $commitFormat = '{%n \"hash\": \"%h\",%n \"date\" : \"%at\"%n,%n \"message\": \"%s\",%n \"author\": \"%an\"},';

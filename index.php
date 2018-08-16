@@ -7,7 +7,7 @@ $gitHelper = new GitHelper();
 Kirby::plugin('wottpal/git', [
 
   'options' => [
-    'path' => kirby()->roots(),  // or kirby()->roots()->content()
+    'dir' => 'index', // or e.g. 'content'
     'branch' => 'master',
     'shouldPull' => false,
     'shouldPush' => false,

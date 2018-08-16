@@ -16,16 +16,21 @@ submodule update --init --recursive`.
 Set these in your `config.php` prefixed with `wottpal.git.`
 
 ```php
-'path' => kirby()->roots(),  // or just kirby()->roots()->content()
+'dir' => 'index',         // *
 'branch' => 'master',
 'shouldPull' => false,
 'shouldPush' => false,
 'shouldCommit' => false,
-'userHooks' => false,
+'userHooks' => false,     // **
 'gitBin' => '',
 'windowsMode' => false,
-'debug' => false
+'debug' => false,
+'logFile' => 'git-log.txt'
 ```
+
+\* Any value accessible via `kirby()->roots()`. You can for example only have your `content` folder under version-control or as a submodule.
+
+\*\* Only enable this if you know what you are doing. Putting sensible information (like account-data) under version-control is a security risk. If enabling this you should also remove `site/accounts` from your `.gitignore`.
 
 ## Log-Field
 
@@ -67,7 +72,6 @@ log:
 # ToDo
 
 - [ ] More conservative error-handling
-- [ ] Fixes if `content/` is root of repository
 - [ ] DRY `fields.php`
 - [ ] Improve debug-logging
 

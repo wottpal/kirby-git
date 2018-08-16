@@ -23,9 +23,9 @@ class GitHelper {
   public function initOptions() {
     $this->isInitialized = True;
 
-    $this->user = kirby()->user()->name();
-    if ($this->user == '') $this->user = kirby()->user()->email();
-    $this->path = option('wottpal.git.path');
+    $this->user = kirby()->user()->name() ?? kirby()->user()->email();;
+    $dir = option('wottpal.git.dir');
+    $this->path = kirby()->roots()->$dir();
     $this->branch = option('wottpal.git.branch');
     $this->shouldPull = option('wottpal.git.shouldPull');
     $this->shouldPush = option('wottpal.git.shouldPush');
@@ -49,6 +49,15 @@ class GitHelper {
 
 
   /**
+  * Returns the given path
+  */
+  public function path() {
+    if (!$this->isInitialized) $this->initOptions();
+    return $this->path;
+  }
+
+
+  /**
   * Initializes the Git.php repository object.
   */
   private function initRepo()
@@ -64,7 +73,6 @@ class GitHelper {
 
     if (!class_exists("Git")) {
       throw new Exception('Git class not found. Is the Git.php submodule installed?');
-      // die('Git class not found. Is the Git.php submodule installed?');
     }
 
     if ($this->gitBin) {

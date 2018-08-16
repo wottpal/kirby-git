@@ -8,7 +8,10 @@
             <div class="k-structure-item-content">
 
               <p v-for="(name, key) in infoColumns" class="k-structure-item-text">
-                <span class="k-structure-item-label">{{ name }}</span>
+                <span class="k-structure-item-label">
+                  {{ name }}
+                  <span v-if="name === 'Date' && item.first">(Latest)</span>
+                </span>
                 <span>{{ item[key] }}</span>
               </p>
 
@@ -149,7 +152,7 @@ export default {
 
       // Select latest revision and mark it as current
       if (this.revisions.length) {
-        this.revisions[0].dateFormatted += " (Current)";
+        this.revisions[0].first = true
         this.revisions[0].selected = true
       }
 
