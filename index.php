@@ -1,8 +1,6 @@
 <?php
 
 require_once __DIR__ . DS . 'GitHelper.php';
-$gitHelper = new GitHelper();
-
 
 Kirby::plugin('wottpal/git', [
 
@@ -22,5 +20,9 @@ Kirby::plugin('wottpal/git', [
   'hooks' => require_once __DIR__ . DS . 'hooks.php',
 
   'fields' => require_once __DIR__ . DS . 'fields.php',
+
+  'siteMethods' => [
+    'git' => require_once __DIR__ . DS . 'src' . DS . 'siteMethods/git.php'
+  ]
 
 ]);
