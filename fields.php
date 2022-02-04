@@ -6,9 +6,9 @@ return [
   'gitLog' => [
     'computed' => [
 
-      'gitLog' => function () use ($gitHelper) {
+      'gitLog' => function () {
         // Gather all commits and format as valid JSOn
-        $log = $gitHelper->getRepo()->log('{%n \"hash\": \"%h\",%n \"date\": \"%at\",%n \"message\": \"%s\",%n \"author\": \"%an\"},');
+        $log = site()->git()->getRepo()->log('{%n \"hash\": \"%h\",%n \"date\": \"%at\",%n \"message\": \"%s\",%n \"author\": \"%an\"},');
         $log = rtrim($log,",");
         $log = "[{$log}]";
         $log = json_decode($log, true);
@@ -35,7 +35,8 @@ return [
       //   return $this->model()->blueprint();
       // },
 
-      'gitRevisions' => function () use ($gitHelper) {
+      'gitRevisions' => function () {
+        $gitHelper = site()->git();
         $parent = $this->model();
 
         // Get the relative content file path
